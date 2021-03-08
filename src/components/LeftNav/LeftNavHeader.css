@@ -1,0 +1,18 @@
+.LeftNavHeader {
+  color: white;
+  font-size: 26px;
+  font-weight: bold;
+  
+  padding: 14px 20px;
+  margin-bottom: 4px;
+  max-width: 200px;
+  
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.LeftNavHeader-online {
+  font-size: 16px;
+  font-weight: normal;
+}
