@@ -17,26 +17,18 @@ export const Login = ({ userLogin }) => {
     history.push("/chat-rooms");
   };
 
-  const handleEnterKeyDown = (event) => {
-    if (event.key === "Enter") {
-      handleSubmit(event);
-    }
-  };
   return (
     <div className="Login">
-      <div className="Login-content">
+      <form className="Login-content" onSubmit={handleSubmit}>
         <InputBox
           name="username"
           className="Login-input"
           onChange={(e) => setUsername(e.target.value)}
           value={username}
           placeholder="Type your username..."
-          onKeyDown={handleEnterKeyDown}
         />
-        <button className="Login-button-submit" onClick={handleSubmit}>
-          Join the Chat!
-        </button>
-      </div>
+        <button className="Login-button-submit">Join the Chat!</button>
+      </form>
     </div>
   );
 };

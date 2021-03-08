@@ -71,15 +71,10 @@ export const ChatRoomContent = ({
     inputBoxRef.current.scrollIntoView(SCROLL_OPTIONS);
   }, [messagesList.length]);
 
-  const handleMessageSubmit = () => {
+  const handleMessageSubmit = (e) => {
+    e.preventDefault();
     socket.emit(NEW_CHAT_MESSAGE, inputValue);
     setInputValue("");
-  };
-
-  const handleKeyDown = (event) => {
-    if (event.key === "Enter") {
-      handleMessageSubmit();
-    }
   };
 
   return (
@@ -104,13 +99,15 @@ export const ChatRoomContent = ({
         })}
         <div className="ChatRoomScroll" ref={inputBoxRef} />
       </div>
-      <div className="ChatRoomContent-inputBoxWrapper">
+      <form
+        className="ChatRoomContent-inputBoxWrapper"
+        onSubmit={handleMessageSubmit}
+      >
         <InputBox
           placeholder="Type a message..."
           name="message-input"
           value={inputValue}
           onChange={(e) => setInputValue(e.target.value)}
-          onKeyDown={handleKeyDown}
         />
         <button
           type="link"
@@ -119,7 +116,7 @@ export const ChatRoomContent = ({
         >
           Send
         </button>
-      </div>
+      </form>
     </div>
   );
 };
