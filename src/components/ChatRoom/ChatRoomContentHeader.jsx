@@ -1,24 +1,27 @@
-import React from "react";
+import React, { memo } from "react";
 import "./ChatRoomContentHeader.css";
 import PropTypes from "prop-types";
 
-const ChatRoomContentHeader = ({ currentUserName, userNamesList, name }) => {
-  return (
-    <div className="ChatRoomContentHeader">
-      <h1 className="ChatRoomContentHeader-title">{name}</h1>
-      <div>
-        <span className="ChatRoomContentHeader-current">
-          {currentUserName} ,
-        </span>
+const ChatRoomContentHeader = memo(
+  ({ currentUserName, userNamesList, name }) => {
+    return (
+      <div className="ChatRoomContentHeader">
+        <h1 className="ChatRoomContentHeader-title">{name}</h1>
+        <div>
+          <span className="ChatRoomContentHeader-current">
+            {currentUserName} ,
+          </span>
 
-        <span>
-          {userNamesList &&
-            userNamesList.filter((name) => name !== currentUserName).join(", ")}
-        </span>
+          <span>
+            {userNamesList
+              .filter((name) => name !== currentUserName)
+              .join(", ")}
+          </span>
+        </div>
       </div>
-    </div>
-  );
-};
+    );
+  }
+);
 
 ChatRoomContentHeader.propTypes = {
   currentUserName: PropTypes.string,

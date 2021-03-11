@@ -3,6 +3,7 @@ const http = require("http");
 const socketIo = require("socket.io");
 
 const port = process.env.PORT || 8080;
+const { findRoom, logUserInSingleRoom, mockDatabase } = require("./server-helper");
 
 const bodyParser = require("body-parser");
 const { nanoid } = require("nanoid");
@@ -14,7 +15,7 @@ app.use(bodyParser.json());
 
 const router = express.Router();
 
-// Unsafely enable cors
+/* Unsafely enable cors for MVP */
 router.use(function (_req, res, next) {
   res.header("Access-Control-Allow-Origin", "*");
   res.header(
@@ -24,58 +25,6 @@ router.use(function (_req, res, next) {
   next();
 });
 
-// mockDatabase
-const mockDatabase = [
-  {
-    name: "Art History Chat",
-    id: 0,
-    users: ["Kevin", "Nicole", "Thomas"],
-    messages: [
-      { name: "Kevin", message: "What is the homework due?", id: "gg35545" },
-      { name: "Nicole", message: "I am not sure either", id: "yy35578" },
-      {
-        name: "Thomas",
-        message: "I think it is due next Monday",
-        id: "hh9843",
-      },
-    ],
-  },
-  {
-    name: "Weekend Party Chat",
-    id: 1,
-    users: ["Randall"],
-    messages: [
-      {
-        name: "Randall",
-        message: "What do we plan to do for the weekend? Party over my house?",
-        id: "ff35278",
-      },
-    ],
-  },
-];
-
-// Utility functions
-const findRoom = (roomId) => {
-  const room = mockDatabase.find((room) => {
-    return room.id === parseInt(roomId);
-  });
-  if (room === undefined) {
-    return { error: `Room id ${roomId} does not exist` };
-  }
-  return room;
-};
-
-const logUser = (room, username) => {
-  const userNotLogged = !room.users.find((user) => {
-    return user === username;
-  });
-
-  if (userNotLogged) {
-    room.users.push(username);
-  }
-};
-
-// API Routes
 router.get("/rooms", function (req, res) {
   const rooms = mockDatabase.map((room) => {
     return { name: room.name, id: room.id };
@@ -120,7 +69,7 @@ router
       console.log("Response:", { error: "request missing name or message" });
       res.json({ error: "request missing name or message" });
     } else {
-      logUser(room, req.body.name);
+      logUserInSingleRoom(room, req.body.name);
       const messageObj = {
         name: req.body.name,
         message: req.body.message,
@@ -132,10 +81,10 @@ router
     }
   });
 
-// mount the router on the app
+
 app.use("/api", router);
 
-// allow cross origin issue
+// allow cross origin issue for WebSocket
 const server = http.createServer(app);
 const io = socketIo(server, {
   cors: {
@@ -155,7 +104,7 @@ io.on("connection", (socket) => {
       } else if (!data) {
         console.log("Response:", { error: "request missing name or message" });
       } else {
-        logUser(room, user);
+        logUserInSingleRoom(room, user);
 
         const newMessage = {
           name: user,

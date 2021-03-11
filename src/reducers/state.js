@@ -6,7 +6,7 @@ export const usersState = {
 
 export const roomsState = {
   data: [],
-  active: {},
+  active: { id: 0, users:[] },
 };
 
 export const messagesState = {};

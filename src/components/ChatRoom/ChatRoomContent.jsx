@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState, useRef, useMemo } from "react";
 import { connect } from "react-redux";
 import socketIOClient from "socket.io-client";
 import PropTypes from "prop-types";
@@ -29,7 +29,8 @@ export const ChatRoomContent = ({
   const [socket, setSocket] = useState(null);
   const [inputValue, setInputValue] = useState("");
   const inputBoxRef = useRef();
-  const activeRoomId = activeRoom.id || 0;
+  const activeRoomId = activeRoom.id;
+
   const messagesList = messagesDetail[activeRoomId] || [];
 
   const createSocketIO = () => {
@@ -38,14 +39,8 @@ export const ChatRoomContent = ({
     });
     socket.on(NEW_CHAT_MESSAGE, ({ message, room }) => {
       const newactiveUsers = room.users;
-      const validUserCheck =
-        newactiveUsers &&
-        activeRoom.users &&
-        newactiveUsers.join("/") !== activeRoom.users.join("/");
 
-      if (validUserCheck) {
-        updateActiveUsers(newactiveUsers);
-      }
+      updateActiveUsers(newactiveUsers);
       postMessageSingleRoom(activeRoomId, message);
     });
     return socket;
@@ -76,12 +71,16 @@ export const ChatRoomContent = ({
     socket.emit(NEW_CHAT_MESSAGE, inputValue);
     setInputValue("");
   };
+ // optimization
+  const activeRoomUser = useMemo(() => {
+    return activeRoom.users;
+  }, [activeRoom.users.join("_")]);
 
   return (
     <div className="ChatRoomContent">
       <ChatRoomContentHeader
         currentUserName={currentUserName}
-        userNamesList={activeRoom.users}
+        userNamesList={activeRoomUser}
         name={activeRoom.name}
       />
 
