@@ -1,4 +1,4 @@
-import React from "react";
+import React, { memo } from "react";
 import { connect } from "react-redux";
 
 import LeftNavHeader from "./LeftNavHeader";
@@ -6,7 +6,7 @@ import LeftNavRoomList from "./LeftNavRoomList.jsx";
 
 import "./index.css";
 
-const LeftNav = ({ currentUser }) => {
+const LeftNav = memo(({ currentUser }) => {
   return (
     <div className="LeftNav">
       <div className="LeftNav-Header">
@@ -16,7 +16,7 @@ const LeftNav = ({ currentUser }) => {
       <LeftNavRoomList />
     </div>
   );
-};
+});
 
 export const mapStateToProps = (state) => {
   return {
