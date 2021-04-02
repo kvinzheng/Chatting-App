@@ -22,7 +22,7 @@ describe("ChatRoomContent Component", () => {
         fetchSingleRoom={fetchSingleRoom}
         fetchSingleRoomMessages={fetchSingleRoomMessages}
         messagesDetail={{ 0: [] }}
-        activeRoom={{ id: 0, name: "" }}
+        activeRoom={{ id: 0, name: "", users: [] }}
         updateActiveUsers={updateActiveUsers}
       />
     );
@@ -37,7 +37,7 @@ describe("ChatRoomContent Component", () => {
         fetchSingleRoom={fetchSingleRoom}
         fetchSingleRoomMessages={fetchSingleRoomMessages}
         messagesDetail={{ 0: [] }}
-        activeRoom={{ id: 0, name: "" }}
+        activeRoom={{ id: 0, name: "", users: [] }}
         updateActiveUsers={updateActiveUsers}
       />
     );

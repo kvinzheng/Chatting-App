@@ -8,6 +8,8 @@ import InputBox from "../../common/InputBox";
 import Message from "../../common/Message";
 import ChatRoomContentHeader from "./ChatRoomContentHeader";
 import { fetchSingleRoom, updateActiveUsers } from "../../actions/room";
+import amqp from "amqplib/callback_api";
+
 import {
   postMessageSingleRoom,
   fetchSingleRoomMessages,
@@ -37,9 +39,13 @@ export const ChatRoomContent = ({
     const socket = socketIOClient(SERVER_HOST, {
       query: { roomId: activeRoomId, user: currentUserName },
     });
-    socket.on(NEW_CHAT_MESSAGE, ({ message, room }) => {
+    socket.on(NEW_CHAT_MESSAGE, ({ message, room, queue }) => {
       const newactiveUsers = room.users;
-
+      //server side event
+      // let eventSource = new EventSource("http://localhost:8080/stream");
+      // eventSource.onmessage = (e) => {
+      //   console.log("e data", e.data);
+      // };
       updateActiveUsers(newactiveUsers);
       postMessageSingleRoom(activeRoomId, message);
     });
@@ -71,7 +77,7 @@ export const ChatRoomContent = ({
     socket.emit(NEW_CHAT_MESSAGE, inputValue);
     setInputValue("");
   };
- // optimization
+  // optimization
   const activeRoomUser = useMemo(() => {
     return activeRoom.users;
   }, [activeRoom.users.join("_")]);
